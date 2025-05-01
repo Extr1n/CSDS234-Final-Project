@@ -7,6 +7,7 @@ def parse_block(lines):
     """Parse one record block into a dict, capturing indented notes."""
     record = {}
     i = 0
+    print(lines[0])
     while i < len(lines):
         raw = lines[i]
         line = raw.strip()
@@ -64,6 +65,7 @@ def parse_block(lines):
                 # unknown key → raw
                 record[key] = rest
                 i += 1
+            
 
         # Indented lines with no “Key:” → treat as a note
         elif raw.startswith('  ') and ':' not in line:
@@ -79,7 +81,9 @@ def parse_block(lines):
 def parse_file_to_json(in_path, out_path):
     with open(in_path, 'r', encoding='utf-8') as f:
         text = f.read().strip()
+    print("Split into %d blocks." % len(re.split(r'\n\s*\n', text)))
     blocks = [b.splitlines() for b in re.split(r'\n\s*\n', text)]
+    print("Parsed %d records." % len(blocks))
     records = [parse_block(b) for b in blocks if b]
     with open(out_path, 'w', encoding='utf-8') as f:
         json.dump(records, f, indent=2, ensure_ascii=False)
