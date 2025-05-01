@@ -40,21 +40,24 @@ def parse_block(lines):
                 hdr = {}
                 for part in header_parts:
                     k,v = map(str.strip, part.split(':',1))
-                    hdr[k.replace(' ', '_')] = int(v)
+                    hdr[k.replace(' ', '_')] = float(v)
                 record['reviews_summary'] = hdr
 
-                total = hdr.get('total', 0)
+                total = int(hdr.get('total', 0))
                 revs = []
                 for j in range(1, total+1):
-                    fields = re.split(r'\s{2,}', lines[i+j].strip())
-                    r = {'date': fields[0]}
-                    for f in fields[1:]:
-                        kk,vv = map(str.strip, f.split(':',1))
-                        if vv != "":
-                            r[kk] = int(vv) if kk in ('rating','votes','helpful') else vv
-                        else:
-                            r[kk] = vv
-                    revs.append(r)
+                    fields={}
+                    if fields:
+                        if(i+j<len(lines)):
+                            fields = re.split(r'\s+', lines[i+j].strip())
+                        r = {'date': fields[0]}
+                        for s in range(1,len(fields),2):
+                            kk,vv = fields[s], fields[s+1]
+                            if vv != "":
+                                r[kk] = int(vv) if kk in ('rating','votes','helpful') else vv
+                            else:
+                                r[kk] = vv
+                        revs.append(r)
                 record['reviews'] = revs
                 i += total + 1
 
