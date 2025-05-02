@@ -39,6 +39,7 @@ if __name__ == '__main__':
         with multiprocessing.Pool() as pool:
             pool.starmap(process_asin, [(asin, n, products, results, asins) for asin in asins])
 
+    results = dict(results)
 
     with open('clean_output_with_distances.json', 'w', encoding='utf-8') as f:
         json.dump(results, f, indent=2, ensure_ascii=False)
