@@ -6,11 +6,9 @@ def process_asin(asin, n, products, results, asins):
     print("Processing %s" % asin)
     total_products, total_distance, furthest = product_distances(products, asin, n, asins)
     results[asin] = {'total_products': total_products, 'total_distance': total_distance, 'furthest_distance': furthest}
-    print("Finished %s" % asin)
+    print("Finished %s (%s/%s)" % asin, len(results), n)
 
 if __name__ == '__main__':
-    n = 548552        
-
     print("Loading products...")
     with open('output.json', 'r', encoding='utf-8') as f:
         products = json.load(f)
@@ -31,6 +29,8 @@ if __name__ == '__main__':
     products = similar_products_dict
 
     asins = set(similar_products_dict.keys())
+
+    n = len(asins)
 
     print("Initializing processes...")
 
