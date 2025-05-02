@@ -1,14 +1,12 @@
 import json
 
-def product_distances(products, product_id, max_distance=30):
-    print("Cleaning products...")
-    for i in range(len(list(products))-1, -1, -1):
-        if 'ASIN' not in products[i]:
-            del products[i]
+def product_distances(products, product_id, max_distance):
     distances = {product_id: 0}
     queue = [(product_id, 0)]
+    total_distance = 0
     while queue:
         asin, distance = queue.pop(0)
+        total_distance += distance
         print("Processing %s (distance: %d)" % (asin, distance))
         if distance > max_distance:
             break
@@ -17,17 +15,10 @@ def product_distances(products, product_id, max_distance=30):
                 if adjacent_asin not in distances:
                     distances[adjacent_asin] = distance + 1
                     queue.append((adjacent_asin, distance + 1))
-        except StopIteration:
-            print("No ASIN in DB for %s" % asin)
+        except (KeyError, StopIteration) as e:
+            if isinstance(e, KeyError):
+                print("No similar ASIN in DB for %s" % asin)
+            elif isinstance(e, StopIteration):
+                print("No ASIN in DB for %s" % asin)
             continue
-    return distances
-
-
-print("Loading products...")
-
-with open('output.json', 'r', encoding='utf-8') as f:
-    products = json.load(f)
-
-
-print("Product distances:")
-print(product_distances(products, products[2]['ASIN']))
+    return distances, total_distance
