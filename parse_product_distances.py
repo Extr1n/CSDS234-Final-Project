@@ -13,13 +13,24 @@ def main():
         if 'ASIN' not in products[i]:
             del products[i]
 
-    distances, total_distance = product_distances(products, products[1]['ASIN'], n)
+    for p in products:
+    
+        total_products, total_distance, furthest = product_distances(products, p['ASIN'], n)
 
-    print("Done. Total distance: %d" % total_distance)
+        print("Updating ASIN: %s" % p['ASIN'])
 
-    print("Avg distance: %d" % (total_distance / len(distances)))
+        p['total_products'] = total_products
+        p['total_distance'] = total_distance
+        p['furthest_distance'] = furthest
 
-    print("Total products: %d" % len(distances))
+        print("Total products: %d" % p['total_products'])
+        print("Total distance: %d" % p['total_distance'])
+        print("Furthest distance: %d" % p['furthest_distance'])
+
+        print("Done with ASIN: %s" % p['ASIN'])
+
+    with open('clean_output_with_distances.json', 'w', encoding='utf-8') as f:
+        json.dump(products, f, indent=2, ensure_ascii=False)
 
 if __name__ == '__main__':
     main()
