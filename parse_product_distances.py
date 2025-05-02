@@ -6,7 +6,7 @@ def process_asin(asin, n, products, results, asins):
     print("Processing %s" % asin)
     total_products, total_distance, furthest = product_distances(products, asin, n, asins)
     results[asin] = {'total_products': total_products, 'total_distance': total_distance, 'furthest_distance': furthest}
-    print("Finished %s (%d/%d)" % asin, len(results), n)
+    print("Finished %s (%d/%d)" % (asin, len(results), n))
 
 if __name__ == '__main__':
     print("Loading products...")
