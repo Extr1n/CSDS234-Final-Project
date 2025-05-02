@@ -20,11 +20,8 @@ def product_distances(products, product_id, max_distance):
         except (KeyError, StopIteration) as e:
             if isinstance(e, KeyError):
                 print("No similar ASIN in DB for %s" % asin)
-                distances[adjacent_asin] = distance + 1
-                
             elif isinstance(e, StopIteration):
                 print("No ASIN in DB for %s" % asin)
-                distances[adjacent_asin] = distance + 1
             continue
     keys = list(distances.keys())
     return total_products, total_distance, distances[keys[-1]]
