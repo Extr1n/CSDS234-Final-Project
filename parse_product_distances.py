@@ -1,7 +1,14 @@
 from product_distances import product_distances
 import json
+import multiprocessing
 
-def main():
+def process_asin(asin, n, products, results, asins):
+    print("Processing %s" % asin)
+    total_products, total_distance, furthest = product_distances(products, asin, n, asins)
+    results[asin] = {'total_products': total_products, 'total_distance': total_distance, 'furthest_distance': furthest}
+    print("Finished %s" % asin)
+
+if __name__ == '__main__':
     n = 548552        
 
     print("Loading products...")
@@ -13,24 +20,25 @@ def main():
         if 'ASIN' not in products[i]:
             del products[i]
 
+    similar_products_dict = {}
+
     for p in products:
-    
-        total_products, total_distance, furthest = product_distances(products, p['ASIN'], n)
+        try:
+            similar_products_dict[p['ASIN']] = p['similar']
+        except KeyError:
+            similar_products_dict[p['ASIN']] = []
 
-        print("Updating ASIN: %s" % p['ASIN'])
+    products = similar_products_dict
 
-        p['total_products'] = total_products
-        p['total_distance'] = total_distance
-        p['furthest_distance'] = furthest
+    asins = set(similar_products_dict.keys())
 
-        print("Total products: %d" % p['total_products'])
-        print("Total distance: %d" % p['total_distance'])
-        print("Furthest distance: %d" % p['furthest_distance'])
+    print("Initializing processes...")
 
-        print("Done with ASIN: %s" % p['ASIN'])
+    with multiprocessing.Manager() as manager:
+        results = manager.dict()
+        with multiprocessing.Pool() as pool:
+            pool.starmap(process_asin, [(asin, n, products, results, asins) for asin in asins])
+
 
     with open('clean_output_with_distances.json', 'w', encoding='utf-8') as f:
-        json.dump(products, f, indent=2, ensure_ascii=False)
-
-if __name__ == '__main__':
-    main()
+        json.dump(results, f, indent=2, ensure_ascii=False)
