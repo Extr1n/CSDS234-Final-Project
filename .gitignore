@@ -1,3 +1,4 @@
 data/amazon-meta.txt
 output.json
 __pycache__/
+clean_output_with_distances.json
