@@ -43,7 +43,7 @@ def plot_stacked_histogram(metrics_by_cat, metric_name, title, xlabel):
     plt.show()
 
 if __name__ == '__main__':
-    with open('joined.json', 'r', encoding='utf-8') as f:
+    with open('data/joined.json', 'r', encoding='utf-8') as f:
         data = json.load(f)
     metrics_by_cat = get_metrics_by_category(data)
     plot_stacked_histogram(metrics_by_cat, 'avg_distance', 'Stacked Histogram: Average Distance', 'Average Distance')

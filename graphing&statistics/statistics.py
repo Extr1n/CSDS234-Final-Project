@@ -11,7 +11,7 @@ def get_statistics(data):
     return avg_furthest_distances, avg_total_products, avg_total_distances
 
 if __name__ == '__main__':
-    with open('joined.json', 'r', encoding = 'utf-8') as f:
+    with open('data/joined.json', 'r', encoding = 'utf-8') as f:
         data = json.load(f)
     avg_furthest_distances, avg_total_products, avg_total_distances = get_statistics(data)
     print("Average Farthest Distance From Product: "+ str(avg_furthest_distances))
