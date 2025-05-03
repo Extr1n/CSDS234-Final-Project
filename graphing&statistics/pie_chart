@@ -1,0 +1,36 @@
+from statistics import get_categorical_statistics
+import json
+import matplotlib.pyplot as plt
+
+categories = categories = ['Book', 'Music', 'DVD', 'Video', 'Toy', 'Video Games',
+              'Software', 'Baby Product', 'CE', 'Sports']
+def get_num_items(categorical_values):
+    total_items=0
+    num_items={}
+    for cat in categorical_values:
+        total_items+=categorical_values[cat][3]
+        num_items[cat] = categorical_values[cat][3]
+    return total_items,num_items
+
+if __name__ == '__main__':
+    with open('data/joined.json', 'r', encoding = 'utf-8') as f:
+        data = json.load(f)
+    total_items, num_items = get_num_items(get_categorical_statistics(data))
+    print(num_items)
+
+    labels = []
+    sizes = []
+
+    for cat in categories:
+        count = num_items.get(cat, 0)
+        if count > 0:
+            labels.append(cat)
+            sizes.append(count)
+
+    plt.figure(figsize=(8, 8))
+    wedges, texts, autotexts = plt.pie(sizes, autopct='%1.1f%%', startangle=140)
+    plt.title("Percentage of Items by Category")
+    plt.axis('equal')
+    plt.legend(wedges, labels, title="Categories", loc="center left", bbox_to_anchor=(1, 0.5))
+    plt.tight_layout()
+    plt.show()
