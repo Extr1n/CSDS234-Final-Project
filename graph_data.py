@@ -25,7 +25,7 @@ def get_distances(data):
 # Function to plot histograms
 def plot_histogram(data, title, xlabel):
     plt.figure()
-    plt.hist(data, bins=10, edgecolor='black')
+    plt.hist(data, bins=15, edgecolor='black')
     plt.title(title)
     plt.xlabel(xlabel)
     plt.ylabel('Frequency')
