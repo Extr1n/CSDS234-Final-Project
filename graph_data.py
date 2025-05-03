@@ -36,7 +36,6 @@ if __name__ == '__main__':
     with open('joined.json', 'r', encoding='utf-8') as f:
         data = json.load(f)
     avg_distances, furthest_distances, total_products, total_distances = get_distances(data)
-    print(total_distances[1])
     plot_histogram(avg_distances, 'Average Distance Histogram', 'Average Distance')
     plot_histogram(furthest_distances, 'Furthest Distance Histogram', 'Furthest Distance')
     plot_histogram(total_products, 'Total Products Histogram', 'Total Products')
