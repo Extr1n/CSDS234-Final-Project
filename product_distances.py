@@ -11,19 +11,12 @@ def product_distances(products, product_id, max_distance, asins=[]):
         total_products += 1
         if distance > max_distance:
             break
-        try:
-            if asins and asin not in asins:
-                continue
-            else:
-                for adjacent_asin in (products[asin]):
-                    if adjacent_asin not in distances:
-                        distances[adjacent_asin] = distance + 1
-                        queue.append((adjacent_asin, distance + 1))
-        except (KeyError, StopIteration) as e:
-            if isinstance(e, KeyError):
-                print("(%s) No similar ASIN in DB for %s" % product_id, asin)
-            elif isinstance(e, StopIteration):
-                print("(%s) No ASIN in DB for %s" % product_id, asin)
+        if asin not in asins:
             continue
+        else:
+            for adjacent_asin in (products[asin]):
+                if adjacent_asin not in distances:
+                    distances[adjacent_asin] = distance + 1
+                    queue.append((adjacent_asin, distance + 1))
     keys = list(distances.keys())
     return total_products, total_distance, distances[keys[-1]]

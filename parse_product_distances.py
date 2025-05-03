@@ -1,12 +1,21 @@
 from product_distances import product_distances
 import json
 import multiprocessing
+import random
 
-def process_asin(asin, n, products, results, asins):
-    print("Processing %s" % asin)
-    total_products, total_distance, furthest = product_distances(products, asin, n, asins)
-    results[asin] = {'total_products': total_products, 'total_distance': total_distance, 'furthest_distance': furthest}
-    print("Finished %s (%d/%d)" % (asin, len(results), n))
+class ProductDistances:
+    def __init__(self):
+        self.count = 0
+    
+    def process_asin(self, asin, n, products, asins):
+        self.count += 1
+        num = random.randint(1, 50)
+        if num <= 4:
+            print("...")
+        total_products, total_distance, furthest = product_distances(products, asin, n, asins)
+        if num >= 48:
+            print("About %d/%d" % (self.count*num, len(asins)))
+        return asin, {'total_products': total_products, 'total_distance': total_distance, 'furthest_distance': furthest}
 
 if __name__ == '__main__':
     print("Loading products...")
@@ -34,12 +43,18 @@ if __name__ == '__main__':
 
     print("Initializing processes...")
 
-    with multiprocessing.Manager() as manager:
-        results = manager.dict()
-        with multiprocessing.Pool() as pool:
-            pool.starmap(process_asin, [(asin, n, products, results, asins) for asin in asins])
+    results = {}
 
-    results = dict(results)
+    pd = ProductDistances()
+
+    with multiprocessing.Manager() as manager:
+        temp = manager.dict()
+        with multiprocessing.Pool() as pool:
+            temp = pool.starmap(pd.process_asin, [(asin, n, products, asins) for asin in asins])
+
+            results = dict(temp)
+
+    print("Writing %d results..." % len(results))
 
     with open('clean_output_with_distances.json', 'w', encoding='utf-8') as f:
         json.dump(results, f, indent=2, ensure_ascii=False)
