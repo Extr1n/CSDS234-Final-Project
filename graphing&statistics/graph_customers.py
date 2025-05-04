@@ -2,6 +2,7 @@ import json
 import matplotlib.pyplot as plt
 import numpy as np
 import statistics
+from matplotlib.patches import Patch
 
 def graph_and_stats():
     with open('data/customer_products.json', 'r', encoding='utf-8') as f:
@@ -27,20 +28,42 @@ def graph_and_stats():
     print(f"Median products reviewed per customer: {median_reviews_per_customer}")
 
     bin_ranges = [1, 2, 5, 10, 20, 100, 200, float('inf')]
+    bin_labels = ['1', '2-5', '5-10', '10-20', '20-100', '100-200', '200+']
 
     digitized = np.digitize(product_counts, bin_ranges)
     counts = np.bincount(digitized)
 
     fig, ax = plt.subplots(figsize=(10, 6))
     ax.bar(np.arange(counts.size - 1), counts[1:], width=0.8) 
-
     ax.set_xticks(np.arange(counts.size - 1))
-    ax.set_xticklabels(['1', '2-5', '5-10', '10-20', '20-100', '100-200', '200+'])
-
-
-    plt.title("Histogram of Product Reviews per Customer")
+    ax.set_xticklabels(bin_labels)
+    plt.title("Product Reviews per Customer")
     plt.xlabel("Number of Products Reviewed")
     plt.ylabel("Number of Customers")
+    plt.grid(axis='y', linestyle='--', alpha=0.7)
+    plt.tight_layout()
+    plt.show()
+
+    review_totals = [0] * len(bin_ranges)
+    for count in product_counts:
+        bin_index = np.digitize(count, bin_ranges)
+        review_totals[bin_index] += count
+
+    total_customers_with_reviews = sum(counts[1:])
+    percentages = [(count / total_customers_with_reviews) * 100 for count in counts[1:]]
+
+    legend_labels = [f"{label}: {pct:.4f}%" for label, pct in zip(bin_labels, percentages)]
+    legend_patches = [Patch(color='white', label=label) for label in legend_labels]
+
+    fig2, ax2 = plt.subplots(figsize=(10, 6))
+    ax2.bar(np.arange(len(review_totals) - 1), review_totals[1:], width=0.8)
+    ax2.set_xticks(np.arange(len(review_totals) - 1))
+    ax2.set_xticklabels(bin_labels)
+    ax2.legend(handles=legend_patches, title="% of customers", loc='upper left', frameon=False)
+
+    plt.title("Total Reviews by Customer Group")
+    plt.xlabel("Number of Products Reviewed (Customer Group)")
+    plt.ylabel("Total Reviews")
     plt.grid(axis='y', linestyle='--', alpha=0.7)
     plt.tight_layout()
     plt.show()
