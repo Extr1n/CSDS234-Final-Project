@@ -59,7 +59,7 @@ def recommend_products(products, target_product, target_customer, rating_thresho
 
 # Example usage:
 if __name__ == "__main__":
-    products = load_products("output.json")
+    products = load_products("data/output.json")
     target_product = "6300215539"
     target_customer = "ATVPDKIKX0DER"
 
