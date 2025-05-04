@@ -13,11 +13,14 @@ def parse_customers(data):
                 if customer_id:
                     customers.add(customer_id)
                     if customer_id not in products_by_customer:
-                        products_by_customer[customer_id] = set()
-                    products_by_customer[customer_id].add(asin)
+                        products_by_customer[customer_id] = []
+                    products_by_customer[customer_id].append({
+                        "product_id": asin,
+                        "rating": int(review.get('rating:', 0))
+                    })
 
     products_by_customer_json = {
-        customer: list(products)
+        customer: products
         for customer, products in products_by_customer.items()
     }
     return products_by_customer_json
