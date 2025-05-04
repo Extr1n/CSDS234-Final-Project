@@ -3,3 +3,4 @@ output.json
 __pycache__/
 clean_output_with_distances.json
 joined.json
+data/
