@@ -24,12 +24,12 @@ if __name__ == '__main__':
     for cat in categories:
         count = num_items.get(cat, 0)
         if count > 0:
-            labels.append(cat)
             sizes.append(count)
+            labels.append(f"{cat} ({count})")
 
     plt.figure(figsize=(8, 8))
     wedges, texts, autotexts = plt.pie(sizes, autopct='%1.1f%%', startangle=140)
-    plt.title("Percentage of Items by Category")
+    plt.title("Percentage of Items per Category")
     plt.axis('equal')
     plt.legend(wedges, labels, title="Categories", loc="center left", bbox_to_anchor=(1, 0.5))
     plt.tight_layout()
