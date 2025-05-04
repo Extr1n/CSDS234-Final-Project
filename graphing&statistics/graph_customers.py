@@ -4,9 +4,7 @@ import numpy as np
 import statistics
 from matplotlib.patches import Patch
 
-def graph_and_stats():
-    with open('data/customer_products.json', 'r', encoding='utf-8') as f:
-        customer_data = json.load(f)
+def graph_and_stats(cusomter_data):
 
     product_counts = []
     total_reviews = 0
@@ -68,5 +66,18 @@ def graph_and_stats():
     plt.tight_layout()
     plt.show()
 
+def top_10_reviewers(customer_data):
+
+    customer_review_counts = {customer: len(products) for customer, products in customer_data.items()}
+
+    top_reviewers = sorted(customer_review_counts.items(), key=lambda x: x[1], reverse=True)[:10]
+
+    print("Top 10 Reviewers:")
+    for i, (customer, count) in enumerate(top_reviewers, start=1):
+        print(f"{i}. Customer ID: {customer}, Reviews: {count}")
+
 if __name__ == '__main__':
-    graph_and_stats()
+    with open('data/customer_products.json', 'r', encoding='utf-8') as f:
+        customer_data = json.load(f)
+    graph_and_stats(customer_data)
+    top_10_reviewers(customer_data)
