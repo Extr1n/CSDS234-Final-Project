@@ -1,6 +1,6 @@
 import json
 import matplotlib.pyplot as plt
-
+import multiprocessing as mp
 
 print("Loading data...")
 
@@ -32,5 +32,8 @@ plt.scatter(x, y, c=color)
 plt.xlabel('Average Distance')
 plt.ylabel('Furthest Distance')
 plt.title('Average Distance vs Furthest Distance')
-plt.legend(categories,loc='upper left')
+
+print("Showing...")
 plt.show()
+
+
