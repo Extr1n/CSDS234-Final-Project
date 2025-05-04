@@ -44,7 +44,7 @@ if __name__ == '__main__':
     print("Average Total Products Connected: " + str(avg_total_products))
     print("Average Total Distance From Product: " + str(avg_total_distances))
     for cat in category_values:
-        print(f"\nTotal Items In {cat}:" + str(category_values[cat][3]))
+        print(f"\nTotal Items In {cat}: " + str(category_values[cat][3]))
         print(f"Average Farthest Distance From {cat}: "+ str(category_values[cat][2]))
         print(f"Average Total Products Connected To {cat}: " + str(category_values[cat][0]))
         print(f"Average Total Distance From {cat}: " + str(category_values[cat][1]))

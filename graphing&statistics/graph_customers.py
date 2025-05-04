@@ -13,7 +13,7 @@ def graph_and_stats():
 
     for products in customer_data.values():
         count = len(products)
-        if count > 0:  # Only consider customers who have reviewed at least 1 product
+        if count > 0:
             product_counts.append(count)
             total_reviews += count
 
@@ -26,19 +26,15 @@ def graph_and_stats():
     print(f"Average products reviewed per customer: {average_reviews_per_customer:.2f}")
     print(f"Median products reviewed per customer: {median_reviews_per_customer}")
 
-    # Define your new bin ranges based on the specified values
     bin_ranges = [1, 2, 5, 10, 20, 100, 200, float('inf')]
 
-    # Digitize the data into bins based on the custom bin ranges
     digitized = np.digitize(product_counts, bin_ranges)
     counts = np.bincount(digitized)
 
-    # Create a bar chart
     fig, ax = plt.subplots(figsize=(10, 6))
-    ax.bar(np.arange(counts.size - 1), counts[1:], width=0.8)  # Skip the 0 bin (since there are no 0 values)
+    ax.bar(np.arange(counts.size - 1), counts[1:], width=0.8) 
 
-    # Set custom x-tick labels to represent the new bin ranges
-    ax.set_xticks(np.arange(counts.size - 1))  # Skip the first bin
+    ax.set_xticks(np.arange(counts.size - 1))
     ax.set_xticklabels(['1', '2-5', '5-10', '10-20', '20-100', '100-200', '200+'])
 
 

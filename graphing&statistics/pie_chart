@@ -1,4 +1,4 @@
-from statistics import get_categorical_statistics
+from stats import get_categorical_statistics
 import json
 import matplotlib.pyplot as plt
 
