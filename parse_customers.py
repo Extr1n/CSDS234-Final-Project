@@ -19,11 +19,14 @@ def parse_customers(data):
                         "rating": int(review.get('rating:', 0))
                     })
 
-    products_by_customer_json = {
+    filtered_products_by_customer = {
         customer: products
         for customer, products in products_by_customer.items()
+        if len(products) <= 10000
     }
-    return products_by_customer_json
+
+    return filtered_products_by_customer
+
 if __name__ == '__main__':
         with open('data/output.json', 'r', encoding='utf-8') as f:
             data = json.load(f)

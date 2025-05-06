@@ -12,15 +12,14 @@ def build_customer_reviews(products):
         asin = product.get("ASIN")
         product_data[asin] = product
         for review in product.get("reviews", []):
-            customer = review.get("cutomer:")  # typo preserved if present in dataset
+            customer = review.get("cutomer:")
             if customer:
                 customer_reviews[customer].add(asin)
     return customer_reviews, product_data
 
-def recommend_products(products, target_product, target_customer, rating_threshold=3.0, top_n=3):
+def recommend_products(products, target_product, target_customer=None, rating_threshold=3.0, top_n=3):
     customer_reviews, product_data = build_customer_reviews(products)
 
-    # Customers who gave a good rating to the target product
     relevant_customers = set()
     for review in product_data.get(target_product, {}).get("reviews", []):
         customer = review.get("cutomer:")
@@ -28,42 +27,45 @@ def recommend_products(products, target_product, target_customer, rating_thresho
         if customer and rating >= rating_threshold:
             relevant_customers.add(customer)
 
-    # Products recommended by these customers
     product_counter = Counter()
     for customer in relevant_customers:
         for asin in customer_reviews[customer]:
             product_counter[asin] += 1
 
-    # Exclude already reviewed products by target customer
-    already_reviewed = customer_reviews.get(target_customer, set())
-    for asin in already_reviewed:
-        product_counter.pop(asin, None)
+    if target_customer:
+        already_reviewed = customer_reviews.get(target_customer, set())
+        for asin in already_reviewed:
+            product_counter.pop(asin, None)
 
-    # Sort by number of recommendations, then by valid salesrank (lower is better)
+
     def sort_key(asin):
         salesrank = product_data.get(asin, {}).get("salesrank", -1)
         return (-product_counter[asin], salesrank if isinstance(salesrank, int) and salesrank > 0 else float('inf'))
 
     sorted_asins = sorted(product_counter, key=sort_key)
 
-    # Return up to top_n recommended products
     recommendations = []
     for asin in sorted_asins[:top_n]:
         product = product_data.get(asin, {})
         title = product.get("title", "Unknown Title")
         salesrank = product.get("salesrank", -1)
         count = product_counter[asin]
-        recommendations.append(f"{title} — recommended by {count} similar customers, salesrank: {salesrank}")
+        recommendations.append(f"{title} — recommended positively by {count} customers, salesrank: {salesrank}")
     
     return recommendations
 
-# Example usage:
 if __name__ == "__main__":
     products = load_products("data/output.json")
-    target_product = "6300215539"
-    target_customer = "ATVPDKIKX0DER"
 
-    recommendations = recommend_products(products, target_product, target_customer)
+    print("Enter the product ID (ASIN)")
+    product_id = input("Product ID: ").strip()
+
+    print("Enter the customer ID (press Enter to skip):")
+    customer_id = input("Customer ID: ").strip()
+    customer_id = customer_id if customer_id else None
+
+    recommendations = recommend_products(products, product_id, customer_id)
+
     print("\nTop recommendations:")
     for rec in recommendations:
         print(rec)
